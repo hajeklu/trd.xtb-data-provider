@@ -1,0 +1,44 @@
+{
+  "name": "trd.xtb-data-provider",
+  "version": "1.0.0",
+  "description": "Project for data providing based on XTB xAPI",
+  "author": "Ing. Luboš Hájek",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run lint && tsc",
+    "changelog": "conventional-changelog -p angular -u",
+    "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "clean": "(rm -r ./.nyc_output || true) && (rm -r ./coverage || true) && (rm -r ./dist || true)",
+    "clean:all": "npm run clean && (rm -r ./node_modules || true)",
+    "covecoder": "nyc npm run test",
+    "cover:check": "nyc --check-coverage npm run test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
+    "preversion": "npm run build && npm run cover:check",
+    "postversion": "git push && git push --tags",
+    "prepare": "npm run build",
+    "start": "nodemon --exec ts-node src/index.ts",
+    "upgrade": "npx npm-check -u",
+    "version": "npm run build && npm run changelog:update",
+    "test": "yarn build && node --test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "eslint": "^8.53.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.20",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "xapi-node": "^3.0.3"
+  }
+}
