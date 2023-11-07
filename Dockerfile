@@ -1,23 +1,17 @@
-# Use a Node.js image that matches your development environment
-FROM node:16
+FROM node
 
-# Set the working directory inside the container to /app
+# Create app directory
+RUN mkdir -p /app
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) to the container
-COPY package*.json ./
+# Install app dependencies
+COPY package.json /app
+COPY yarn.lock /app
+RUN yarn
 
-# Install dependencies
-RUN npm install
+# Bundle app source
+COPY . /app
+RUN yarn build
 
-# Copy your source code to the container
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Expose the port that your Node.js app will run on
 EXPOSE 3000
-
-# Start the app
-CMD [ "node", "dist/index.js" ]
+CMD [ "yarn", "start" ]
