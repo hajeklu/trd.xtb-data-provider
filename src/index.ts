@@ -42,13 +42,18 @@ xapi.onClose(() => {
     connectToXAPI();
 });
 
+function isPeriodValid(periodParam: string): boolean {
+    return Object.values(PERIOD_FIELD).includes(Number(periodParam));
+}
 
-app.get('/api/prices/historical', async (req: Request, res: Response) => {
-    const symbol = req.query.symbol as string;
+
+app.get('/api/prices/:symbol/:period', async (req: Request, res: Response) => {
+    const symbol = req.params.symbol;
+    const periodParam = req.params.period;
 
     // Validate the symbol parameter
     if (!symbol) {
-        return res.status(400).json({ error: 'A "symbol" query parameter is required.' });
+        return res.status(400).json({ error: 'A "symbol" path parameter is required.' });
     }
 
     // Check if the symbol is one of the allowed values
@@ -56,10 +61,21 @@ app.get('/api/prices/historical', async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Invalid symbol. The symbol must be one of the allowed symbols.' });
     }
 
+    // Validate the period parameter
+    if (!isPeriodValid(periodParam)) {
+        return res.status(400).send({
+            message: `Invalid period. Must be one of ${Object.values(PERIOD_FIELD).join(", ")}.`
+        });
+    }
+
+    // Now that we know the period is valid, convert it to the corresponding enum value
+    const period = Number(periodParam) as PERIOD_FIELD;
+
+
     try {
         const { candles, digits } = await xapi.getPriceHistory({
-            symbol: symbol,
-            period: PERIOD_FIELD.PERIOD_M1,
+            symbol,
+            period,
         });
 
         const transformedCandles = candles.map(candle => ({
