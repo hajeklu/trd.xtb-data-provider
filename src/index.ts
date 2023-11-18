@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { PERIOD_FIELD, XAPI } from 'xapi-node';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 export const symbolsToAnalysts = ['EURGBP', 'USDCAD', 'AUDUSD', 'EURUSD', 'USDJPY', 'GBPUSD', 'EURJPY',
     'EURCHF', 'GBPJPY', 'GBPCHF', 'USDCHF', 'NZDUSD', 'CADJPY', 'GBPCAD',
     'NZDCAD', 'AUDJPY', 'EURNOK', 'AUDCAD', 'EURNZD', 'EURCNH', 'NZDCHF',
@@ -48,6 +48,7 @@ function isPeriodValid(periodParam: string): boolean {
 
 
 app.get('/api/prices/:symbol/:period', async (req: Request, res: Response) => {
+    console.log(`Received request for price history for symbol ${req.params.symbol} and period ${req.params.period}`);
     const symbol = req.params.symbol;
     const periodParam = req.params.period;
 
@@ -64,7 +65,7 @@ app.get('/api/prices/:symbol/:period', async (req: Request, res: Response) => {
     // Validate the period parameter
     if (!isPeriodValid(periodParam)) {
         return res.status(400).send({
-            message: `Invalid period. Must be one of ${Object.values(PERIOD_FIELD).join(", ")}.`
+            message: `Invalid period.Must be one of ${Object.values(PERIOD_FIELD).join(", ")}.`
         });
     }
 
