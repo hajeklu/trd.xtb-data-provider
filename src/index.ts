@@ -38,8 +38,8 @@ function connectToXAPI() {
 
 connectToXAPI()
 xapi.onClose(() => {
-    console.log('XAPI connection closed, attempting to reconnect...');
-    connectToXAPI();
+    console.log('XAPI connection closed, restart application..');
+    process.exit(1);
 });
 
 function isPeriodValid(periodParam: string): boolean {
