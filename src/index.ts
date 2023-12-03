@@ -3,11 +3,6 @@ import { PERIOD_FIELD, XAPI } from 'xapi-node';
 
 const app = express();
 const port = process.env.PORT || 3000;
-export const symbolsToAnalysts = ['EURGBP', 'USDCAD', 'AUDUSD', 'EURUSD', 'USDJPY', 'GBPUSD', 'EURJPY',
-    'EURCHF', 'GBPJPY', 'GBPCHF', 'USDCHF', 'NZDUSD', 'CADJPY', 'GBPCAD',
-    'NZDCAD', 'AUDJPY', 'EURNOK', 'AUDCAD', 'EURNZD', 'EURCNH', 'NZDCHF',
-    'GBPNZD', 'EURCAD', 'AUDCHF', 'AUDNZD', 'EURAUD', 'GBPAUD', 'USDNOK',
-    'USDCNH', 'USDSEK', 'CHFJPY', 'EURSEK', 'CADCHF', 'DE30', 'US100', 'EU50', 'UK100']
 
 // Set up your XAPI configuration with your actual account details
 const xapi = new XAPI({
@@ -57,11 +52,6 @@ app.get('/api/prices/:symbol/:period', async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'A "symbol" path parameter is required.' });
     }
 
-    // Check if the symbol is one of the allowed values
-    if (!symbolsToAnalysts.includes(symbol)) {
-        return res.status(400).json({ error: 'Invalid symbol. The symbol must be one of the allowed symbols.' });
-    }
-
     // Validate the period parameter
     if (!isPeriodValid(periodParam)) {
         return res.status(400).send({
@@ -91,7 +81,7 @@ app.get('/api/prices/:symbol/:period', async (req: Request, res: Response) => {
         res.json(transformedCandles);
     } catch (error) {
         console.error('Error fetching price history:', error);
-        res.status(500).send('Error fetching price history');
+        res.status(500).send({ message: 'Error fetching price history', error });
     }
 });
 
