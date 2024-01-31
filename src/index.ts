@@ -31,11 +31,19 @@ function connectToXAPI() {
     });
 }
 
+function shutDown() {
+    console.log('Shutting down application...');
+    // Perform any cleanup tasks here, like closing database connections
+    process.kill(process.pid, 'SIGUSR2');
+}
+
 connectToXAPI()
 xapi.onClose(() => {
     console.log('XAPI connection closed, restart application..');
-    process.exit(1);
+    shutDown();
 });
+
+
 
 function isPeriodValid(periodParam: string): boolean {
     return Object.values(PERIOD_FIELD).includes(Number(periodParam));
