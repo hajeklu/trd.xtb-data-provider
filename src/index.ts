@@ -95,6 +95,12 @@ app.get('/health-check', async (req: Request, res: Response) => {
     }
 });
 
+app.get('/health-check/setfalse', async (req: Request, res: Response) => {
+    healthCheck = false;
+    res.status(200).send('OK');
+});
+
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
