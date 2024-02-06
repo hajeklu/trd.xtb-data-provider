@@ -3,6 +3,7 @@ import { PERIOD_FIELD, XAPI } from 'xapi-node';
 
 const app = express();
 const port = process.env.PORT || 3000;
+let healthCheck = true;
 
 // Set up your XAPI configuration with your actual account details
 const xapi = new XAPI({
@@ -31,16 +32,9 @@ function connectToXAPI() {
     });
 }
 
-function shutDown() {
-    console.log('Shutting down application...');
-    // Perform any cleanup tasks here, like closing database connections
-    process.kill(process.pid, 'SIGUSR2');
-}
-
 connectToXAPI()
 xapi.onClose(() => {
-    console.log('XAPI connection closed, restart application..');
-    shutDown();
+    healthCheck = false;
 });
 
 
@@ -90,6 +84,14 @@ app.get('/api/prices/:symbol/:period', async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error fetching price history:', error);
         res.status(500).send({ message: 'Error fetching price history', error });
+    }
+});
+
+app.get('/health-check', async (req: Request, res: Response) => {
+    if (healthCheck) {
+        res.status(200).send('OK');
+    } else {
+        res.status(500).send('Health check failed');
     }
 });
 
