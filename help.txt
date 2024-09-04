@@ -1,0 +1,3 @@
+sudo docker run -p 3000:3000 -d -e TRD_LOGIN=$TRD_LOGIN -e TRD_PASSWORD=$TRD_PASSWORD trd.xtb-data-provider
+sudo docker logs b2c1f198b90d345ffdd40057accdedd344a0e80b9f90abdaf242c69d99dcd776
+docker build -t trd.xtb-data-provider .
